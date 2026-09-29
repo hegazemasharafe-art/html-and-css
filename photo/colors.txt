@@ -1,0 +1,8 @@
+Products Page Palette
+#0A0F1A  Background
+#111827  Secondary background / cards
+#6366F1  Primary blue-violet
+#3B82F6  Accent blue
+#8B5CF6  Purple accent
+#9CA3AF  Secondary text
+#FFFFFF  Main text

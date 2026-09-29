@@ -1,0 +1,47 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Apply Font Awesome local link",
+			"type": "shell",
+			"command": "(Get-Content 'html\\index.html' -Raw).Replace('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css','../css/all.min.css') | Set-Content 'html\\index.html'",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Fix Font Awesome stylesheet line",
+			"type": "shell",
+			"command": "$p='html\\index.html'; $lines=Get-Content $p; for($i=0;$i -lt $lines.Count;$i++){ if($lines[$i] -match 'Font Awesome icons'){ if($i+1 -lt $lines.Count){ $lines[$i+1]='    <link rel=\"stylesheet\" href=\"../css/all.min.css\">' } } }; Set-Content -Path $p -Value $lines",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Improve products responsive CSS",
+			"type": "shell",
+			"command": "$p='css\\main .css'; $css=[IO.File]::ReadAllText($p); $replacement=@'\n@media (max-width: 900px) {\n    .products-home {\n        height: auto;\n        min-height: 100vh;\n    }\n\n    .products-home .products-hero {\n        height: 220px;\n    }\n\n    .products-home .search {\n        display: flex;\n        flex-wrap: wrap;\n        gap: 12px;\n        padding: 15px 20px;\n    }\n\n    .products-home .search input:first-of-type,\n    .products-home .search input:last-of-type {\n        width: auto;\n        min-width: 0;\n        flex: 1 1 220px;\n    }\n\n    .all-card {\n        display: grid;\n        grid-template-columns: repeat(3, minmax(0, 1fr));\n        gap: 20px;\n        padding: 0 20px 30px;\n    }\n\n    .all-card .card-rpoduct {\n        min-width: 0;\n    }\n\n    .all-card .card-rpoduct img {\n        width: 100%;\n        height: 130px;\n    }\n}\n\n@media (max-width: 650px) {\n    .products-home .products-hero {\n        height: 170px;\n    }\n\n    .all-card {\n        grid-template-columns: repeat(2, minmax(0, 1fr));\n        gap: 15px;\n        padding: 0 12px 25px;\n    }\n\n    .all-card .card-rpoduct img {\n        height: 115px;\n    }\n\n    .all-card .card-rpoduct h3 {\n        font-size: 15px;\n    }\n}\n\n@media (max-width: 400px) {\n    .products-home .search {\n        padding: 12px;\n    }\n\n    .products-home .search input:first-of-type,\n    .products-home .search input:last-of-type {\n        flex-basis: 100%;\n        width: 100%;\n    }\n\n    .all-card {\n        grid-template-columns: 1fr;\n    }\n}\n\n'@; $pattern='(?s)@media \\(max-width:500px\\) \\{.*?\\}\\r?\\n\\r?\\n/\\* about section \\*/'; $result=[Text.RegularExpressions.Regex]::Replace($css,$pattern,$replacement+'/* about section */',1); if($result -eq $css){ throw 'Products media block was not found' }; [IO.File]::WriteAllText($p,$result)",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Contain products section content",
+			"type": "shell",
+			"command": "$cssPath='css\\main .css'; $css=[IO.File]::ReadAllText($cssPath); $css=$css.Replace('    height: 100vh;`r`n    margin: 20PX 0;','    height: auto;`r`n    min-height: 100vh;`r`n    margin: 20px 0;'); $css=$css.Replace('    height: 37%;','    height: 300px;',1); [IO.File]::WriteAllText($cssPath,$css); $htmlPath='html\\index.html'; $html=[IO.File]::ReadAllText($htmlPath); $html=$html.Replace('<img src=\"../photo/products_hero.jpg\" </div>','<img src=\"../photo/products_hero.jpg\" alt=\"Our products\"></div>'); $html=$html.Replace('<span class=\"x\">$1109/span>','<span class=\"x\">$1109</span>'); [IO.File]::WriteAllText($htmlPath,$html)",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Fix product search layout",
+			"type": "shell",
+			"command": "$p='css\\main .css'; $css=[IO.File]::ReadAllText($p); $css=$css.Replace('    display: grid;`r`n    grid-template-areas: \"con con con con \";','    display: block;'); $css=$css.Replace('    display: grid;`n    grid-template-areas: \"con con con con \";','    display: block;'); [IO.File]::WriteAllText($p,$css); Get-Content $p | Select-Object -Skip 558 -First 12",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Make contact section responsive",
+			"type": "shell",
+			"command": "$p='css\\main .css'; $css=[IO.File]::ReadAllText($p); $append=@'\n\n/* contact responsive layout */\n@media (max-width: 1100px) {\n    .contact {\n        grid-template-columns: minmax(0, 1fr) minmax(220px, 0.75fr);\n    }\n\n    .contact-image {\n        grid-column: 1 / -1;\n        height: 300px;\n    }\n\n    .contact-info {\n        align-items: center;\n        padding: 30px 20px;\n    }\n}\n\n@media (max-width: 700px) {\n    .contact {\n        display: flex;\n        flex-direction: column;\n    }\n\n    .contact-content {\n        margin: 0;\n        padding: 55px 20px 20px;\n    }\n\n    .contact-content h2 {\n        font-size: clamp(42px, 13vw, 60px);\n    }\n\n    .contact-content > p {\n        max-width: 100%;\n    }\n\n    .contact-content .place {\n        display: flex;\n        flex-direction: column;\n        gap: 15px;\n    }\n\n    .contact-content .place input,\n    .contact-content .place textarea {\n        box-sizing: border-box;\n        width: 100%;\n        margin: 0;\n    }\n\n    .contact-content .place textarea {\n        min-height: 130px;\n    }\n\n    .contact-content .n3n {\n        width: 100%;\n        margin: 25px 0 10px;\n    }\n\n    .contact-info {\n        align-items: stretch;\n        gap: 16px;\n        padding: 20px;\n    }\n\n    .contact-info .on {\n        width: 100%;\n        min-height: 70px;\n    }\n\n    .contact-image {\n        height: 240px;\n    }\n}\n\n@media (max-width: 400px) {\n    .contact-content {\n        padding-inline: 15px;\n    }\n\n    .contact-info {\n        padding-inline: 15px;\n    }\n\n    .contact-image {\n        height: 190px;\n    }\n}\n'@; [IO.File]::AppendAllText($p,$append)",
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}

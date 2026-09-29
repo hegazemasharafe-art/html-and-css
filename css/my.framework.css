@@ -1,0 +1,24 @@
+ overlap image {
+
+     position: relative;
+     width: 60%;
+
+
+     .image::after {
+         content: "";
+        background: linear-gradient(to right unset  #061426, transparent);
+         position: absolute;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+     }
+
+     img {
+         width: 100%;
+         height: 100%;
+         display: block;
+         object-fit: cover;
+
+     }
+ }
